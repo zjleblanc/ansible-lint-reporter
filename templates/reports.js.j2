@@ -1,0 +1,5 @@
+var reports = {};
+
+{% for report in f_reports -%}
+reports['{{ (report | basename).split('.')[0] }}'] = {{ lookup('file', report) }};
+{% endfor %}

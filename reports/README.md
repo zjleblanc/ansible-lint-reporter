@@ -1,0 +1,1 @@
+### ansible-lint-reporter will write codeclimate reports to this directory

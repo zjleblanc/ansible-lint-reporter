@@ -1,0 +1,35 @@
+div.card {
+    position: sticky;
+    top: 0;
+}
+
+table.table {
+    border-collapse: separate;
+    border-spacing: 0px;
+}
+
+table.table thead {
+    position: sticky;
+    background-color: white;
+}
+
+table.table thead > tr > th {
+    border-bottom: 2px solid currentColor;
+}
+
+#issues-table > tr > th {
+    border-bottom: 1px solid rgb(222, 226, 230);
+}
+
+#issues-table > tr > td {
+    border-bottom: 1px solid rgb(222, 226, 230);
+}
+
+
+/* table.table thead > tr > th {
+    border-left: 1px solid gray;
+} */
+
+#issues-table {
+    border-top: none;
+}
