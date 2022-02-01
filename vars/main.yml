@@ -1,5 +1,6 @@
+ansible_lint_reporter_content_src_type: directory
 ansible_lint_reporter_root_dir: /tmp/ansible-lint-reporter
-ansible_lint_reporter_roles_glob: ansible-role-*
+ansible_lint_reporter_roles_glob: "*"
 ansible_lint_reporter_root_dir_excludes: reports
 
 

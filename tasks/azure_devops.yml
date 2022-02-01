@@ -1,0 +1,15 @@
+- name: List repos in project
+  ansible.builtin.uri:
+    url: "https://dev.azure.com/{{ azure_devops.organization }}/{{ azure_devops.project }}/_apis/git/repositories?api-version=6.0"
+    method: GET
+  register: r_repositories
+
+- name: Clone repos in project
+  ansible.builtin.git:
+    repo: "git@ssh.dev.azure.com:v3/{{ azure_devops.organization }}/{{ azure_devops.project }}/{{ item.name }}"
+    dest: "{{ ansible_lint_reporter_root_dir }}/{{ item.name }}"
+    key_file: "{{ azure_devops.key_file }}"
+    accept_hostkey: yes
+    clone: yes
+  loop: "{{ r_repositories.json.value }}"
+  become: yes

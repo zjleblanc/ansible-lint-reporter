@@ -3,30 +3,25 @@
   vars_files:
     - vars/main.yml
 
-  module_defaults:
-    ansible.builtin.uri:
-      force_basic_auth: yes
-      user: git
-      password: "{{ ado_personal_access_token }}"
-
   tasks:
-  - name: List repos in project
-    ansible.builtin.uri:
-      url: "https://dev.azure.com/{{ azure_devops.organization }}/{{ azure_devops.project }}/_apis/git/repositories?api-version=6.0"
-      method: GET
-    register: r_repositories
-    tags: clone
+  - name: Get repos from Azure Devops
+    when: ansible_lint_reporter_content_src_type|lower == 'ado'
+    block:
+    - name: Run Azure DevOps tasks
+      ansible.builtin.include_tasks: tasks/azure_devops.yml
+      tags:
+        - ado
+        - clone
+    module_defaults:
+      ansible.builtin.uri:
+        force_basic_auth: yes
+        user: git
+        password: "{{ ado_personal_access_token }}"
 
-  - name: Clone repos in project
-    ansible.builtin.git:
-      repo: "git@ssh.dev.azure.com:v3/{{ azure_devops.organization }}/{{ azure_devops.project }}/{{ item.name }}"
-      dest: "{{ ansible_lint_reporter_root_dir }}/{{ item.name }}"
-      key_file: "{{ azure_devops.key_file }}"
-      accept_hostkey: yes
-      clone: yes
-    loop: "{{ r_repositories.json.value }}"
-    become: yes
-    tags: clone
+  - name: Print content source directory
+    when: ansible_lint_reporter_content_src_type|lower == 'directory'
+    ansible.builtin.debug:
+      var: ansible_lint_reporter_root_dir
 
   - name: Install ansible-lint
     pip:
@@ -35,7 +30,7 @@
     become: yes
     tags: lint
 
-  - name: Find cloned repos
+  - name: Find content
     ansible.builtin.find:
       paths: "{{ ansible_lint_reporter_root_dir }}"
       patterns: "{{ ansible_lint_reporter_roles_glob }}"
@@ -64,7 +59,7 @@
 
   - name: Get role reports
     set_fact:
-      f_reports: "{{ lookup('fileglob', playbook_dir + '/reports/*').split(',') }}"
+      f_reports: "{{ lookup('fileglob', playbook_dir + '/reports/*.json').split(',') }}"
     tags: template
 
   - name: Template reports.js
@@ -73,7 +68,7 @@
       dest: "{{ playbook_dir }}/dist/js/reports.js"
     tags: template
 
-  - name: Template reports.js
+  - name: Template index.html
     ansible.builtin.template:
       src: index.html.j2
       dest: "{{ playbook_dir }}/dist/index.html"
