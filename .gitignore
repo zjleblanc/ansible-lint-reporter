@@ -2,3 +2,4 @@ dist/js/reports.js
 dist/index.html
 vars/secret.yml
 reports/*.json
+**/.DS_Store

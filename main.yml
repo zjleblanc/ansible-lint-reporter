@@ -23,9 +23,11 @@
     ansible.builtin.debug:
       var: ansible_lint_reporter_root_dir
 
-  - name: Install ansible-lint
+  - name: Install python package requirements
     pip:
-      name: ansible-lint
+      name: 
+        - ansible-lint
+        - jmespath
       state: latest
     become: yes
     tags: lint
