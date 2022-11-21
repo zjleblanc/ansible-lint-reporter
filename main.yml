@@ -28,7 +28,7 @@
       name: 
         - ansible-lint
         - jmespath
-      state: latest
+      state: present
     become: yes
     tags: lint
 
@@ -47,11 +47,13 @@
     ansible.builtin.file:
       path: "{{ playbook_dir }}/reports"
       state: directory
+      mode: 0755
     tags: lint
 
   - name: Lint repository
     ansible.builtin.shell: "ansible-lint -f codeclimate {{ role }} > {{ playbook_dir }}/reports/{{ role | basename }}.json"
     register: r_lint
+    changed_when: r_lint.rc in [0,1,2]
     failed_when: r_lint.rc not in [0,1,2] 
     loop: "{{ r_roles.files | json_query('[].path') | list }}"
     loop_control:
@@ -68,10 +70,12 @@
     ansible.builtin.template:
       src: reports.js.j2
       dest: "{{ playbook_dir }}/dist/js/reports.js"
+      mode: 0644
     tags: template
 
   - name: Template index.html
     ansible.builtin.template:
       src: index.html.j2
       dest: "{{ playbook_dir }}/dist/index.html"
+      mode: 0644
     tags: template
