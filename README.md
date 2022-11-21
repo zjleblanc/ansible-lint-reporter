@@ -10,7 +10,7 @@ This playbook automates the process of linting a group of roles and generating a
 
 | Name | Default | Description |
 | ---- | ------- | ----------- |
-| ansible_lint_reporter_content_src_type | directory | Source of roles content: `directory` `ado` |
+| ansible_lint_reporter_content_src_type | directory | Source of roles content: `directory|ado` |
 | ansible_lint_reporter_root_dir | /tmp/ansible-lint-reporter | Roles content destination - if using `directory` override this var |
 | ansible_lint_reporter_roles_glob | * | Optional fileglob for focusing on roles content within the **ansible_lint_reporter_root_dir** |
 | ansible_lint_reporter_root_dir_excludes | reports | Optional exclusion filter for identify roles in **ansible_lint_reporter_root_dir** |
